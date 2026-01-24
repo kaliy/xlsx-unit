@@ -1,0 +1,35 @@
+# Project specific
+~*.xlsx
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+*~
+*.swp
+
+# Build / tooling
+.gradle/
+build/
+out/
+*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# VS Code / Cursor
+.vscode/
+.cursor/
+
+# Eclipse
+.project
+.classpath
+.settings/
