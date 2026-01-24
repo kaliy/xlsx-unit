@@ -5,26 +5,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link XlsxComparator}.
  */
+@NoArgsConstructor
 class XlsxComparatorTest {
     /**
      * Comparator under test.
      */
     private final XlsxComparator comparator = new XlsxComparator();
-
-    /**
-     * Creates the test instance.
-     */
-    @SuppressWarnings({
-            "PMD.UnnecessaryConstructor",
-            "PMD.UncommentedEmptyConstructor"
-    })
-    public XlsxComparatorTest() {
-    }
 
     @Test
     void areEqualReturnsTrueForSamePath() throws Exception {

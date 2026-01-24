@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="xlsx-unit-pmd"
-        xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-    <description>PMD rules for xlsx-unit.</description>
+<ruleset name="quickstart"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Quickstart configuration of PMD. Includes the rules that are most likely to apply everywhere.
+    </description>
 
-    <rule ref="category/java/bestpractices.xml" />
-    <rule ref="category/java/codestyle.xml" />
-    <rule ref="category/java/design.xml">
-        <exclude name="LoosePackageCoupling" />
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="GuardLogStatement"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
-    <rule ref="category/java/design.xml/LoosePackageCoupling">
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="UseExplicitTypes"/>
+        <exclude name="OnlyOneReturn"/>
+    </rule>
+    <rule ref="category/java/design.xml">
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="TooManyFields"/>
+    </rule>
+    <rule ref="category/java/documentation.xml"/>
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="MissingSerialVersionUID"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+    </rule>
+    <rule ref="category/java/multithreading.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/security.xml"/>
+
+    <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
         <properties>
-            <property name="packages" value="org.kaliy.xlsxunit" />
+            <property name="IgnoreJUnitCompletely" value="true"/>
         </properties>
     </rule>
-    <rule ref="category/java/documentation.xml" />
-    <rule ref="category/java/errorprone.xml" />
-    <rule ref="category/java/multithreading.xml" />
-    <rule ref="category/java/performance.xml" />
-    <rule ref="category/java/security.xml" />
 </ruleset>

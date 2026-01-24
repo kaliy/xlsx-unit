@@ -6,21 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link XlsxAssert}.
  */
+@NoArgsConstructor
 class XlsxAssertTest {
-    /**
-     * Creates the test instance.
-     */
-    @SuppressWarnings({
-            "PMD.UnnecessaryConstructor",
-            "PMD.UncommentedEmptyConstructor"
-    })
-    public XlsxAssertTest() {
-    }
 
     @Test
     void isEqualToPassesForSamePath() throws Exception {

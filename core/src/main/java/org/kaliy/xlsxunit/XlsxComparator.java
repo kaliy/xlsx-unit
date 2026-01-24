@@ -2,20 +2,13 @@ package org.kaliy.xlsxunit;
 
 import java.io.File;
 import java.util.Objects;
+import lombok.NoArgsConstructor;
 
 /**
  * Compares XLSX files.
  */
+@NoArgsConstructor
 public final class XlsxComparator {
-    /**
-     * Creates a comparator instance.
-     */
-    @SuppressWarnings({
-            "PMD.UnnecessaryConstructor",
-            "PMD.UncommentedEmptyConstructor"
-    })
-    public XlsxComparator() {
-    }
 
     /**
      * Compares two XLSX files for equality.

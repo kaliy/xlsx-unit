@@ -1,5 +1,6 @@
 plugins {
     id("base")
+    id("io.freefair.lombok") version "8.13" apply false
 }
 
 allprojects {
@@ -15,6 +16,7 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
+    apply(plugin = "io.freefair.lombok")
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
