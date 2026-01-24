@@ -57,7 +57,7 @@ subprojects {
 
     tasks.withType<Pmd> {
         reports {
-            xml.required.set(false)
+            xml.required.set(true)
             html.required.set(true)
         }
     }
