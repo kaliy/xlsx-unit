@@ -28,7 +28,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      * @return this assertion
      */
     @SuppressWarnings("PMD.LinguisticNaming")
-    public XlsxAssert isEqualTo(final File expected) {
+    public XlsxAssert isEqualTo(File expected) {
         isNotNull();
 
         if (!comparator.areEqual(expected, actual)) {
