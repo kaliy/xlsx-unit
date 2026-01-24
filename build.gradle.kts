@@ -13,6 +13,8 @@ allprojects {
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = "checkstyle")
+    apply(plugin = "pmd")
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
@@ -30,5 +32,31 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+    }
+
+    extensions.configure<CheckstyleExtension> {
+        toolVersion = "10.21.4"
+        configFile = rootProject.file("config/checkstyle/google_checks_4spaces.xml")
+        isShowViolations = true
+    }
+
+    tasks.withType<Checkstyle> {
+        reports {
+            xml.required.set(false)
+            html.required.set(true)
+        }
+    }
+
+    extensions.configure<PmdExtension> {
+        toolVersion = "7.12.0"
+        ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
+        isIgnoreFailures = false
+    }
+
+    tasks.withType<Pmd> {
+        reports {
+            xml.required.set(false)
+            html.required.set(true)
+        }
     }
 }

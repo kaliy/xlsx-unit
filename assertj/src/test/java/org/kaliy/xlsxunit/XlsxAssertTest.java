@@ -8,23 +8,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for {@link XlsxAssert}.
+ */
 class XlsxAssertTest {
+    /**
+     * Creates the test instance.
+     */
+    @SuppressWarnings({
+            "PMD.UnnecessaryConstructor",
+            "PMD.UncommentedEmptyConstructor"
+    })
+    public XlsxAssertTest() {
+    }
+
     @Test
-    void isEqualTo_passesForSamePath() throws Exception {
-        Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
-        File expected = temp.toFile();
-        File actual = new File(temp.toString());
+    void isEqualToPassesForSamePath() throws Exception {
+        final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
+        final File expected = temp.toFile();
+        final File actual = new File(temp.toString());
 
         assertThatCode(() -> XlsxAssertions.assertThatXlsx(actual).isEqualTo(expected))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    void isEqualTo_failsForDifferentFiles() throws Exception {
-        Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
-        Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
+    void isEqualToFailsForDifferentFiles() throws Exception {
+        final Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
+        final Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
 
-        assertThatThrownBy(() -> XlsxAssertions.assertThatXlsx(left.toFile()).isEqualTo(right.toFile()))
+        assertThatThrownBy(
+                () -> XlsxAssertions.assertThatXlsx(left.toFile()).isEqualTo(right.toFile())
+        )
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("Expected xlsx files to be equal");
     }

@@ -7,22 +7,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests for {@link XlsxComparator}.
+ */
 class XlsxComparatorTest {
+    /**
+     * Comparator under test.
+     */
     private final XlsxComparator comparator = new XlsxComparator();
 
+    /**
+     * Creates the test instance.
+     */
+    @SuppressWarnings({
+            "PMD.UnnecessaryConstructor",
+            "PMD.UncommentedEmptyConstructor"
+    })
+    public XlsxComparatorTest() {
+    }
+
     @Test
-    void areEqual_returnsTrueForSamePath() throws Exception {
-        Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
-        File expected = temp.toFile();
-        File actual = new File(temp.toString());
+    void areEqualReturnsTrueForSamePath() throws Exception {
+        final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
+        final File expected = temp.toFile();
+        final File actual = new File(temp.toString());
 
         assertThat(comparator.areEqual(expected, actual)).isTrue();
     }
 
     @Test
-    void areEqual_returnsFalseForDifferentFiles() throws Exception {
-        Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
-        Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
+    void areEqualReturnsFalseForDifferentFiles() throws Exception {
+        final Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
+        final Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
 
         assertThat(comparator.areEqual(left.toFile(), right.toFile())).isFalse();
     }
