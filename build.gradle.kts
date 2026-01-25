@@ -50,6 +50,9 @@ subprojects {
     }
 
     tasks.withType<Checkstyle> {
+        isIgnoreFailures = false
+        maxWarnings = 0
+        maxErrors = 0
         reports {
             xml.required.set(true)
             html.required.set(true)
