@@ -17,7 +17,8 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      *
      * @param actual actual file reference
      */
-    public XlsxAssert(final File actual) {
+    public XlsxAssert(final File actual)
+    {
         super(actual, XlsxAssert.class);
     }
 

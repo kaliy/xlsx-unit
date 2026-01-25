@@ -1,6 +1,6 @@
 plugins {
     id("base")
-    id("io.freefair.lombok") version "8.13" apply false
+    id("io.freefair.lombok") version "9.2.0" apply false
 }
 
 allprojects {
@@ -17,6 +17,7 @@ subprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "io.freefair.lombok")
+    val toolchains = extensions.getByType<JavaToolchainService>()
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
@@ -56,12 +57,17 @@ subprojects {
     }
 
     extensions.configure<PmdExtension> {
-        toolVersion = "7.12.0"
+        toolVersion = "7.20.0"
         ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
         isIgnoreFailures = false
     }
 
     tasks.withType<Pmd> {
+        javaLauncher.set(
+            toolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            }
+        )
         reports {
             xml.required.set(true)
             html.required.set(true)
