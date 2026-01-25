@@ -72,9 +72,7 @@ jobs:
         uses: microsoft/sarif-actions@v0.2
         with:
           # Use find to expand folder contents into args
-          command: >
-            merge --merge-runs --force --output-file build/sarif/checkstyle.sarif
-            $(find build/sarif/checkstyle -type f -name '*.sarif' | sort)
+          command: merge --merge-runs --force --output-file build/sarif/checkstyle.sarif build/sarif/checkstyle/*.sarif
 
       - name: Upload merged Checkstyle SARIF
         if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
