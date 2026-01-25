@@ -40,11 +40,20 @@ jobs:
       - name: Run Checkstyle
         id: checkstyle
         run: ./gradlew checkstyleMain checkstyleTest
+      - name: Collect Checkstyle SARIF
+        if: always() && github.event_name == 'pull_request'
+        run: |
+          mkdir -p build/sarif/checkstyle
+          while IFS= read -r file; do
+            module="$(echo "$file" | cut -d/ -f1)"
+            base="$(basename "$file")"
+            cp "$file" "build/sarif/checkstyle/${module}-${base}"
+          done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f)
       - name: Upload Checkstyle SARIF
         if: always() && github.event_name == 'pull_request'
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: '**/reports/checkstyle/*.sarif'
+          sarif_file: build/sarif/checkstyle
           category: checkstyle
   pmd:
     name: PMD
