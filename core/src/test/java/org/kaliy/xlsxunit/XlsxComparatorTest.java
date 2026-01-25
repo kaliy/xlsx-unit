@@ -19,7 +19,7 @@ class XlsxComparatorTest {
     private final XlsxComparator comparator = new XlsxComparator();
 
     @Test
-    void areEqualReturnsTrueForSamePath() throws Exception {
+    void sd_sd() throws Exception {
         final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
         final File expected = temp.toFile();
         final File actual = new File(temp.toString());

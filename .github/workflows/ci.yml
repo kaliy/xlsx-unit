@@ -48,37 +48,42 @@ jobs:
 
       - name: Collect SARIF files into build/sarif/checkstyle
         if: always() && github.event_name == 'pull_request'
-        id: collect
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p build/sarif/checkstyle
-  
+          
           while IFS= read -r file; do
             rel="${file#./}"
             module="${rel%%/*}"
             base="$(basename "$file")"
             cp "$file" "build/sarif/checkstyle/${module}-${base}"
           done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
-  
-          count="$(find build/sarif/checkstyle -type f -name '*.sarif' | wc -l | tr -d ' ')"
-          echo "count=$count" >> "$GITHUB_OUTPUT"
-          echo "Collected $count SARIF files:"
-          find build/sarif/checkstyle -type f -name '*.sarif' -print
 
-      - name: Merge Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
-        uses: microsoft/sarif-actions@v0.2
-        with:
-          # Use find to expand folder contents into args
-          command: merge --merge-runs --output-file build/sarif/checkstyle.sarif build/sarif/checkstyle/*.sarif
+      - name: Add unique runAutomationDetails.id to each SARIF
+        if: always() && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          
+          out_dir = Path("build/sarif/checkstyle")
+          for p in sorted(out_dir.glob("*.sarif")):
+              data = json.loads(p.read_text(encoding="utf-8"))
+              if not data.get("runs"):
+                  continue
+              run = data["runs"][0]
+              run["runAutomationDetails"] = {"id": f"checkstyle:{p.stem}"}
+              p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+          PY
 
-      - name: Upload merged Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
+      - name: Upload Checkstyle SARIF directory
+        if: always() && github.event_name == 'pull_request'
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: build.sarif.checkstyle.sarif
-          category: checkstyle
+          sarif_file: build/sarif/checkstyle
   checkstyle:
     name: Checkstyle
     runs-on: ubuntu-latest
