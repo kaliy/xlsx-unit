@@ -37,14 +37,14 @@ subprojects {
     }
 
     extensions.configure<CheckstyleExtension> {
-        toolVersion = "10.21.4"
+        toolVersion = "13.0.0"
         configFile = rootProject.file("config/checkstyle/google_checks_4spaces.xml")
         isShowViolations = true
     }
 
     tasks.withType<Checkstyle> {
         reports {
-            xml.required.set(false)
+            xml.required.set(true)
             html.required.set(true)
         }
     }

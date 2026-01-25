@@ -29,11 +29,22 @@ jobs:
     name: Checkstyle
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: dbelyaev/action-checkstyle@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Temurin 17
+        uses: actions/setup-java@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          checkstyle_config: config/checkstyle/google_checks_4spaces.xml
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+      - name: Run Checkstyle
+        id: checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+      - name: Annotate PR with Checkstyle
+        if: always() && github.event_name == 'pull_request'
+        uses: lcollins/checkstyle-github-action@v3.1.0
+        with:
+          path: '**/reports/checkstyle/*.xml'
 
   pmd:
     name: PMD
@@ -49,6 +60,9 @@ jobs:
           cache: gradle
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest
-      - uses: lcollins/pmd-github-action@v3.1.0
+        id: pmd
+      - name: Annotate PR with PMD
+        if: always() && github.event_name == 'pull_request'
+        uses: lcollins/pmd-github-action@v3.1.0
         with:
           path: '**/reports/pmd/*.xml'
