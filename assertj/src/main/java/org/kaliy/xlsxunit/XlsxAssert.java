@@ -17,8 +17,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      *
      * @param actual actual file reference
      */
-    public XlsxAssert(final File actual)
-    {
+    public XlsxAssert(final File actual) {
         super(actual, XlsxAssert.class);
     }
 
@@ -29,7 +28,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      * @return this assertion
      */
     @SuppressWarnings("PMD.LinguisticNaming")
-    public XlsxAssert isEqualTo(File expected) {
+    public XlsxAssert no___kk(File expected) {
         isNotNull();
 
         if (!comparator.areEqual(expected, actual)) {
