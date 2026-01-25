@@ -75,7 +75,7 @@ jobs:
               if not data.get("runs"):
                   continue
               run = data["runs"][0]
-              run["runAutomationDetails"] = {"id": f"checkstyle:{p.stem}"}
+              run["automationDetails"] = {"id": f"checkstyle:{p.stem}"}
               p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
           PY
 
