@@ -40,12 +40,12 @@ jobs:
       - name: Run Checkstyle
         id: checkstyle
         run: ./gradlew checkstyleMain checkstyleTest
-      - name: Annotate PR with Checkstyle
+      - name: Upload Checkstyle SARIF
         if: always() && github.event_name == 'pull_request'
-        uses: lcollins/checkstyle-github-action@v3.1.0
+        uses: github/codeql-action/upload-sarif@v4
         with:
-          path: '**/reports/checkstyle/*.xml'
-
+          sarif_file: '**/reports/checkstyle/*.sarif'
+          category: checkstyle
   pmd:
     name: PMD
     runs-on: ubuntu-latest
@@ -61,8 +61,3 @@ jobs:
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest
         id: pmd
-      - name: Annotate PR with PMD
-        if: always() && github.event_name == 'pull_request'
-        uses: lcollins/pmd-github-action@v3.1.0
-        with:
-          path: '**/reports/pmd/*.xml'

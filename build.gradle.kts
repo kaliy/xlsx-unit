@@ -17,7 +17,6 @@ subprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "io.freefair.lombok")
-    val toolchains = extensions.getByType<JavaToolchainService>()
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
@@ -46,16 +45,14 @@ subprojects {
     extensions.configure<CheckstyleExtension> {
         toolVersion = "13.0.0"
         configFile = rootProject.file("config/checkstyle/google_checks_4spaces.xml")
-        isShowViolations = true
+        maxWarnings = 0
+        maxErrors = 0
     }
 
     tasks.withType<Checkstyle> {
-        isIgnoreFailures = false
-        maxWarnings = 0
-        maxErrors = 0
         reports {
-            xml.required.set(true)
-            html.required.set(true)
+            sarif.required = true
+            html.required = true
         }
     }
 
@@ -66,14 +63,8 @@ subprojects {
     }
 
     tasks.withType<Pmd> {
-        javaLauncher.set(
-            toolchains.launcherFor {
-                languageVersion.set(JavaLanguageVersion.of(17))
-            }
-        )
         reports {
-            xml.required.set(true)
-            html.required.set(true)
+            html.required = true
         }
     }
 }
