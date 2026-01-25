@@ -23,7 +23,7 @@ jobs:
           java-version: ${{ matrix.java }}
           cache: gradle
       - name: Run Gradle tests
-        run: ./gradlew test
+        run: ./gradlew test -PtoolchainVersion=${{ matrix.java }}
 
   checkstyle:
     name: Checkstyle
@@ -31,11 +31,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Temurin 17
+      - name: Set up Temurin 25
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "25"
           cache: gradle
       - name: Run Checkstyle
         id: checkstyle
@@ -52,11 +52,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Set up Temurin 17
+      - name: Set up Temurin 25
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "25"
           cache: gradle
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest

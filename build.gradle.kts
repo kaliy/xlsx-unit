@@ -20,8 +20,14 @@ subprojects {
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
+            val toolchainOverride = providers.gradleProperty("toolchainVersion").orNull
+            val toolchainVersion = toolchainOverride?.toIntOrNull() ?: 25
+            languageVersion = JavaLanguageVersion.of(toolchainVersion)
         }
+    }
+
+    tasks.withType<JavaCompile> {
+        options.release.set(17)
     }
 
     dependencies {
