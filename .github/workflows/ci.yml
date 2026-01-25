@@ -54,10 +54,9 @@ jobs:
           set -euo pipefail
           mkdir -p build/sarif/checkstyle
   
-          # Copy and prefix with module dir to avoid collisions
           while IFS= read -r file; do
-            rel="${file#./}"                 # strip leading "./"
-            module="${rel%%/*}"              # first path segment = module
+            rel="${file#./}"
+            module="${rel%%/*}"
             base="$(basename "$file")"
             cp "$file" "build/sarif/checkstyle/${module}-${base}"
           done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
@@ -78,7 +77,7 @@ jobs:
         if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: build/sarif/checkstyle.sarif
+          sarif_file: build.sarif.checkstyle.sarif
           category: checkstyle
   checkstyle:
     name: Checkstyle
