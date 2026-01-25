@@ -69,7 +69,7 @@ jobs:
 
       - name: Merge Checkstyle SARIF
         if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
-        uses: microsoft/sarif-actions@v0.1
+        uses: microsoft/sarif-actions@v0.2
         with:
           # Use find to expand folder contents into args
           command: >
