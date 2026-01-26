@@ -62,7 +62,7 @@ jobs:
           done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
 
       - name: Merge Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
+        if: always() && github.event_name == 'pull_request'
         uses: microsoft/sarif-actions@v0.2
         with:
           # psths for output file are not supported - build/sarif/checkstyle.sarif will be converted to
@@ -70,7 +70,7 @@ jobs:
           command: merge --merge-runs --output-file checkstyle.sarif build/sarif/checkstyle/*.sarif
 
       - name: Upload merged Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
+        if: always() && github.event_name == 'pull_request'
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: checkstyle.sarif
