@@ -10,25 +10,27 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
     /**
      * Comparator used by this assertion.
      */
-    private final XlsxComparator COMPPPP = new XlsxComparator();
+    private final XlsxComparator comparator = new XlsxComparator();
 
     /**
      * Creates an assertion instance.
      *
      * @param actual actual file reference
      */
-    public XlsxAssert(File actual) {
+    public XlsxAssert(final File actual) {
         super(actual, XlsxAssert.class);
     }
 
     /**
      * Verifies the actual XLSX equals the expected file.
      *
+     * @param expected expected file reference
+     * @return this assertion
      */
     public XlsxAssert compare(final File expected) {
         isNotNull();
 
-        if (!COMPPPP.areEqual(expected, actual)) {
+        if (!comparator.areEqual(expected, actual)) {
             failWithMessage(
                     "Expected xlsx files to be equal but they were not.%nExpected: %s%nActual: %s",
                     expected,

@@ -28,56 +28,6 @@ jobs:
   checkstyle:
     name: Checkstyle
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Temurin 25
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "25"
-          cache: gradle
-
-      - name: Run Checkstyle
-        id: checkstyle
-        run: ./gradlew checkstyleMain checkstyleTest
-
-      - name: Collect SARIF files into build/sarif/checkstyle
-        if: always() && github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p build/sarif/checkstyle
-          
-          while IFS= read -r file; do
-            rel="${file#./}"
-            module="${rel%%/*}"
-            base="$(basename "$file")"
-            cp "$file" "build/sarif/checkstyle/${module}-${base}"
-          done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
-
-      - name: Merge Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request'
-        uses: microsoft/sarif-actions@v0.2
-        with:
-          # paths for output file are not supported - build/sarif/checkstyle.sarif will be converted to
-          # build.sarif.checkstyle.sarif, so the output filename is just checkstyle.sarif
-          command: merge --merge-runs --output-file checkstyle.sarif build/sarif/checkstyle/*.sarif
-
-      - name: Upload merged Checkstyle SARIF
-        if: always() && github.event_name == 'pull_request'
-        uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: checkstyle.sarif
-          category: checkstyle
-
-  checkstylereviewdog:
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -120,6 +70,7 @@ jobs:
               -filter-mode=diff_context \
               -level=info
           done
+
   pmd:
     name: PMD
     runs-on: ubuntu-latest
