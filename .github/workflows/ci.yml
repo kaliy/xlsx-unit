@@ -61,6 +61,21 @@ jobs:
             cp "$file" "build/sarif/checkstyle/${module}-${base}"
           done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
 
+      - name: Print collected Checkstyle SARIF files
+        if: always() && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Collected Checkstyle SARIF files:"
+          ls -la build/sarif/checkstyle || true
+          for f in build/sarif/checkstyle/*.sarif; do
+            if [ -f "$f" ]; then
+              echo "----- $f -----"
+              cat "$f"
+              echo
+            fi
+          done
+
       - name: Add unique runAutomationDetails.id to each SARIF
         if: always() && github.event_name == 'pull_request'
         shell: bash
@@ -79,6 +94,21 @@ jobs:
               run["automationDetails"] = {"id": f"checkstyle:{p.stem}"}
               p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
           PY
+
+      - name: Print processed Checkstyle SARIF files
+        if: always() && github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Processed Checkstyle SARIF files:"
+          ls -la build/sarif/checkstyle || true
+          for f in build/sarif/checkstyle/*.sarif; do
+            if [ -f "$f" ]; then
+              echo "----- $f -----"
+              cat "$f"
+              echo
+            fi
+          done
 
       - name: Upload Checkstyle SARIF directory
         if: always() && github.event_name == 'pull_request'
