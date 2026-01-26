@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class XlsxAssertTest {
 
     @Test
-    void IsEqualToPassesForSamePath() throws Exception {
+    void isEqualToPassesForSamePath() throws Exception {
         final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
         final File expected = temp.toFile();
         final File actual = new File(temp.toString());

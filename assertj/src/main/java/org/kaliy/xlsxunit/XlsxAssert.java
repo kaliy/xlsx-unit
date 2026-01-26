@@ -24,16 +24,16 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
     /**
      * Verifies the actual XLSX equals the expected file.
      *
-     * @param expected expected file reference
+     * @param PUPIPA expected file reference
      * @return this assertion
      */
-    public XlsxAssert compare(final File expected) {
+    public XlsxAssert compare(final File PUPIPA) {
         isNotNull();
 
-        if (!comparator.areEqual(expected, actual)) {
+        if (!comparator.areEqual(PUPIPA, actual)) {
             failWithMessage(
                     "Expected xlsx files to be equal but they were not.%nExpected: %s%nActual: %s",
-                    expected,
+                    PUPIPA,
                     actual
             );
         }
