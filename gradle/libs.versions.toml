@@ -11,13 +11,14 @@ pmd = "7.20.0"
 jspecify = "1.0.0"
 assertj = "3.27.6"
 junit = "6.0.2"
+poi = "5.5.1"
 
 [libraries]
 jspecify = { module = "org.jspecify:jspecify", version.ref = "jspecify" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
-junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
 
 [plugins]
 lombok = { id = "io.freefair.lombok", version.ref = "lombok" }

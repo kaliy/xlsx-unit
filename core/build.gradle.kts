@@ -3,5 +3,5 @@ base {
 }
 
 dependencies {
-    api("org.apache.poi:poi-ooxml:5.5.1")
+    api(libs.poi.ooxml)
 }

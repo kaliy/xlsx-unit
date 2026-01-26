@@ -42,7 +42,7 @@ subprojects {
     }
 
     extensions.configure<CheckstyleExtension> {
-        toolVersion = libs.versions.checkstyle.get()
+        toolVersion = rootProject.libs.versions.checkstyle.get()
         configFile = rootProject.file("config/checkstyle/google_checks_4spaces.xml")
         maxWarnings = 0
         maxErrors = 0
@@ -57,7 +57,7 @@ subprojects {
     }
 
     extensions.configure<PmdExtension> {
-        toolVersion = libs.versions.pmd.get()
+        toolVersion = rootProject.libs.versions.pmd.get()
         ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
         isIgnoreFailures = false
         isConsoleOutput = true
