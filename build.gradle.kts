@@ -1,6 +1,6 @@
 plugins {
     id("base")
-    id("io.freefair.lombok") version "9.2.0" apply false
+    alias(libs.plugins.lombok) apply false
 }
 
 allprojects {
@@ -21,21 +21,20 @@ subprojects {
     extensions.configure<JavaPluginExtension> {
         toolchain {
             val toolchainOverride = providers.gradleProperty("toolchainVersion").orNull
-            val toolchainVersion = toolchainOverride?.toIntOrNull() ?: 25
+            val toolchainVersion = toolchainOverride ?: rootProject.libs.versions.java.toolchain.get()
             languageVersion = JavaLanguageVersion.of(toolchainVersion)
         }
     }
 
     tasks.withType<JavaCompile> {
-        options.release.set(17)
+        options.release.set(rootProject.libs.versions.java.release.get().toInt())
     }
 
     dependencies {
-        add("api", "org.jspecify:jspecify:1.0.0")
-        add("testImplementation", "org.assertj:assertj-core:3.27.6")
-        add("testImplementation", platform("org.junit:junit-bom:6.0.2"))
-        add("testImplementation", "org.junit.jupiter:junit-jupiter")
-        add("testRuntimeOnly", "org.junit.platform:junit-platform-launcher")
+        add("api", rootProject.libs.jspecify)
+        add("testImplementation", rootProject.libs.assertj.core)
+        add("testImplementation", rootProject.libs.junit.jupiter)
+        add("testRuntimeOnly", rootProject.libs.junit.platform.launcher)
     }
 
     tasks.withType<Test> {
@@ -43,7 +42,7 @@ subprojects {
     }
 
     extensions.configure<CheckstyleExtension> {
-        toolVersion = "13.0.0"
+        toolVersion = libs.versions.checkstyle.get()
         configFile = rootProject.file("config/checkstyle/google_checks_4spaces.xml")
         maxWarnings = 0
         maxErrors = 0
@@ -58,7 +57,7 @@ subprojects {
     }
 
     extensions.configure<PmdExtension> {
-        toolVersion = "7.20.0"
+        toolVersion = libs.versions.pmd.get()
         ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
         isIgnoreFailures = false
         isConsoleOutput = true
