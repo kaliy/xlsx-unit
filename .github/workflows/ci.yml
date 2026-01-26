@@ -104,9 +104,9 @@ jobs:
         run: |
           set -euo pipefail
 
-          mapfile -t reports < <(find . -path "*/build/reports/checkstyle/*.xml" -type f | sort)
+          mapfile -t reports < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
           if [ "${#reports[@]}" -eq 0 ]; then
-            echo "No checkstyle XML reports found."
+            echo "No checkstyle SARIF reports found."
             exit 0
           fi
 
@@ -114,7 +114,7 @@ jobs:
             # name can be anything; I include the module-ish prefix for clarity
             name="checkstyle:$(echo "${r#./}" | sed 's#/build/reports/checkstyle/.*##')"
             cat "$r" | reviewdog \
-              -f=checkstyle \
+              -f=sarif \
               -name="$name" \
               -reporter=github-check \
               -filter-mode=diff_context \

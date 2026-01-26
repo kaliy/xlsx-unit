@@ -24,8 +24,6 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
     /**
      * Verifies the actual XLSX equals the expected file.
      *
-     * @param expected expected file reference
-     * @return this assertion
      */
     public XlsxAssert compare(final File expected) {
         isNotNull();
