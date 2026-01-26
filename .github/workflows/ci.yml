@@ -65,7 +65,7 @@ jobs:
         if: always() && github.event_name == 'pull_request'
         uses: microsoft/sarif-actions@v0.2
         with:
-          # psths for output file are not supported - build/sarif/checkstyle.sarif will be converted to
+          # paths for output file are not supported - build/sarif/checkstyle.sarif will be converted to
           # build.sarif.checkstyle.sarif, so the output filename is just checkstyle.sarif
           command: merge --merge-runs --output-file checkstyle.sarif build/sarif/checkstyle/*.sarif
 
@@ -75,6 +75,49 @@ jobs:
         with:
           sarif_file: checkstyle.sarif
           category: checkstyle
+
+  checkstylereviewdog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: gradle
+
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      - name: Report Checkstyle via reviewdog (GitHub Check)
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -t reports < <(find . -path "*/build/reports/checkstyle/*.xml" -type f | sort)
+          if [ "${#reports[@]}" -eq 0 ]; then
+            echo "No checkstyle XML reports found."
+            exit 0
+          fi
+
+          for r in "${reports[@]}"; do
+            # name can be anything; I include the module-ish prefix for clarity
+            name="checkstyle:$(echo "${r#./}" | sed 's#/build/reports/checkstyle/.*##')"
+            cat "$r" | reviewdog \
+              -f=checkstyle \
+              -name="$name" \
+              -reporter=github-check \
+              -filter-mode=diff_context \
+              -level=info
+          done
   pmd:
     name: PMD
     runs-on: ubuntu-latest

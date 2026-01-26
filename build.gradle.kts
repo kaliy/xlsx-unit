@@ -52,6 +52,7 @@ subprojects {
     tasks.withType<Checkstyle> {
         reports {
             sarif.required = true
+            xml.required = true
             html.required = true
         }
     }
