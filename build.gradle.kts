@@ -60,6 +60,7 @@ subprojects {
         toolVersion = "7.20.0"
         ruleSetFiles = files(rootProject.file("config/pmd/ruleset.xml"))
         isIgnoreFailures = false
+        isConsoleOutput = true
     }
 
     tasks.withType<Pmd> {

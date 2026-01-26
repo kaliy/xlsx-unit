@@ -27,8 +27,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      * @param expected expected file reference
      * @return this assertion
      */
-    @SuppressWarnings("PMD.LinguisticNaming")
-    public XlsxAssert no___kk(File expected) {
+    public XlsxAssert compare(final File expected) {
         isNotNull();
 
         if (!comparator.areEqual(expected, actual)) {
