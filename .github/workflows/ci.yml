@@ -61,60 +61,20 @@ jobs:
             cp "$file" "build/sarif/checkstyle/${module}-${base}"
           done < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
 
-      - name: Print collected Checkstyle SARIF files
-        if: always() && github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "Collected Checkstyle SARIF files:"
-          ls -la build/sarif/checkstyle || true
-          for f in build/sarif/checkstyle/*.sarif; do
-            if [ -f "$f" ]; then
-              echo "----- $f -----"
-              cat "$f"
-              echo
-            fi
-          done
+      - name: Merge Checkstyle SARIF
+        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
+        uses: microsoft/sarif-actions@v0.2
+        with:
+          # psths for output file are not supported - build/sarif/checkstyle.sarif will be converted to
+          # build.sarif.checkstyle.sarif, so the output filename is just checkstyle.sarif
+          command: merge --merge-runs --output-file checkstyle.sarif build/sarif/checkstyle/*.sarif
 
-      - name: Add unique runAutomationDetails.id to each SARIF
-        if: always() && github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          
-          out_dir = Path("build/sarif/checkstyle")
-          for p in sorted(out_dir.glob("*.sarif")):
-              data = json.loads(p.read_text(encoding="utf-8"))
-              if not data.get("runs"):
-                  continue
-              run = data["runs"][0]
-              run["automationDetails"] = {"id": f"checkstyle:{p.stem}"}
-              p.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
-          PY
-
-      - name: Print processed Checkstyle SARIF files
-        if: always() && github.event_name == 'pull_request'
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "Processed Checkstyle SARIF files:"
-          ls -la build/sarif/checkstyle || true
-          for f in build/sarif/checkstyle/*.sarif; do
-            if [ -f "$f" ]; then
-              echo "----- $f -----"
-              cat "$f"
-              echo
-            fi
-          done
-
-      - name: Upload Checkstyle SARIF directory
-        if: always() && github.event_name == 'pull_request'
+      - name: Upload merged Checkstyle SARIF
+        if: always() && github.event_name == 'pull_request' && steps.collect.outputs.count != '0'
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: build/sarif/checkstyle
+          sarif_file: checkstyle.sarif
+          category: checkstyle
   pmd:
     name: PMD
     runs-on: ubuntu-latest
