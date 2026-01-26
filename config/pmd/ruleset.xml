@@ -6,31 +6,44 @@
     <description>
         PMD with all categories included with some tweaks
     </description>
+
     <rule ref="category/java/bestpractices.xml">
         <exclude name="GuardLogStatement"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
+
     <rule ref="category/java/codestyle.xml">
         <exclude name="CommentDefaultAccessModifier"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="UseExplicitTypes"/>
         <exclude name="OnlyOneReturn"/>
     </rule>
+    <rule ref="category/java/codestyle.xml/MethodNamingConventions">
+        <properties>
+            <property name="junit5TestPattern" value="[a-z][a-zA-Z0-9_]*"/>
+        </properties>
+    </rule>
+
     <rule ref="category/java/design.xml">
         <exclude name="LoosePackageCoupling"/>
         <exclude name="TooManyFields"/>
     </rule>
-    <rule ref="category/java/documentation.xml"/>
-    <rule ref="category/java/errorprone.xml">
-        <exclude name="MissingSerialVersionUID"/>
-        <exclude name="AvoidDuplicateLiterals"/>
-    </rule>
-    <rule ref="category/java/multithreading.xml"/>
-    <rule ref="category/java/performance.xml"/>
-    <rule ref="category/java/security.xml"/>
     <rule ref="category/java/design.xml/SignatureDeclareThrowsException">
         <properties>
             <property name="IgnoreJUnitCompletely" value="true"/>
         </properties>
     </rule>
+
+    <rule ref="category/java/documentation.xml"/>
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="MissingSerialVersionUID"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+    </rule>
+
+    <rule ref="category/java/multithreading.xml"/>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule ref="category/java/security.xml"/>
 </ruleset>
