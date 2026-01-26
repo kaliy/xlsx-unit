@@ -46,7 +46,7 @@ jobs:
         with:
           reviewdog_version: latest
 
-      - name: Report Checkstyle via reviewdog
+      - name: Report Checkstyle via reviewdog (GitHub Check)
         if: always() && github.event_name == 'pull_request'
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,9 +61,11 @@ jobs:
           fi
 
           for r in "${reports[@]}"; do
+            # name can be anything; I include the module-ish prefix for clarity
+            name="checkstyle:$(echo "${r#./}" | sed 's#/build/reports/checkstyle/.*##; s#/#-#')"
             cat "$r" | reviewdog \
               -f=sarif \
-              -name="Checkstyle" \
+              -name="$name" \
               -reporter=github-pr-check \
               -filter-mode=diff_context \
               -level=error
