@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class XlsxAssertTest {
 
     @Test
-    void isEqualToPassesForSamePath() throws Exception {
+    void IsEqualToPassesForSamePath() throws Exception {
         final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
         final File expected = temp.toFile();
         final File actual = new File(temp.toString());
@@ -26,7 +26,7 @@ class XlsxAssertTest {
     }
 
     @Test
-    void isEqualToFailsForDifferentFiles() throws Exception {
+    void isEqualToFailsForDidf_fferentFiles() throws Exception {
         final Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
         final Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
 
