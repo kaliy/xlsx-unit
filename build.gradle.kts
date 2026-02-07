@@ -1,6 +1,7 @@
 plugins {
     id("base")
     alias(libs.plugins.lombok) apply false
+    alias(libs.plugins.spotbugs) apply false
 }
 
 allprojects {
@@ -17,6 +18,7 @@ subprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "io.freefair.lombok")
+    apply(plugin = "com.github.spotbugs")
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
@@ -73,6 +75,21 @@ subprojects {
     tasks.withType<Pmd> {
         reports {
             html.required = true
+        }
+    }
+
+    extensions.configure<com.github.spotbugs.snom.SpotBugsExtension> {
+        toolVersion = rootProject.libs.versions.spotbugs.tool
+        effort = com.github.spotbugs.snom.Effort.MAX
+        reportLevel = com.github.spotbugs.snom.Confidence.LOW
+    }
+
+    tasks.withType<com.github.spotbugs.snom.SpotBugsTask> {
+        reports.create("html") {
+            required = true
+        }
+        reports.create("xml") {
+            required = true
         }
     }
 }
