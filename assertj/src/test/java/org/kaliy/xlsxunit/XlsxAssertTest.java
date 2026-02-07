@@ -4,19 +4,17 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
-/**
- * Tests for {@link XlsxAssert}.
- */
 @NoArgsConstructor
 class XlsxAssertTest {
 
     @Test
-    void isEqualToPassesForSamePath() throws Exception {
+    void isEqualToPassesForSamePath() throws IOException {
         final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
         final File expected = temp.toFile();
         final File actual = new File(temp.toString());
@@ -26,7 +24,7 @@ class XlsxAssertTest {
     }
 
     @Test
-    void isEqualToFailsForDifferentFiles() throws Exception {
+    void isEqualToFailsForDifferentFiles() throws IOException {
         final Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
         final Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
 

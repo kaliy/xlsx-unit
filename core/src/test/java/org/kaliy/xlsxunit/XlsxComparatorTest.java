@@ -3,6 +3,7 @@ package org.kaliy.xlsxunit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ class XlsxComparatorTest {
     private final XlsxComparator comparator = new XlsxComparator();
 
     @Test
-    void compares_files() throws Exception {
+    void compares_files() throws IOException {
         final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
         final File expected = temp.toFile();
         final File actual = new File(temp.toString());

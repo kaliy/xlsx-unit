@@ -35,6 +35,14 @@
     </rule>
 
     <rule ref="category/java/documentation.xml"/>
+    <rule ref="category/java/documentation.xml/CommentRequired">
+        <properties>
+            <!-- The rule is great but tests have a lot of imports.
+            We will have it until this ticket is resolved https://github.com/pmd/pmd/issues/4036 -->
+            <property name="violationSuppressXPath"
+                      value="//ClassDeclaration[ends-with(@SimpleName, 'Test')]"/>
+        </properties>
+    </rule>
 
     <rule ref="category/java/errorprone.xml">
         <exclude name="MissingSerialVersionUID"/>
