@@ -35,16 +35,12 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.release.set(rootProject.libs.versions.java.release.get().toInt())
-//        val taskName = name
 
         options.errorprone {
             errorproneArgs.add("-XepOpt:NullAway:OnlyNullMarked=true")
             errorproneArgs.add("-XepOpt:NullAway:JSpecifyMode=true")
             check("NullAway", CheckSeverity.ERROR)
             check("RequireExplicitNullMarking", CheckSeverity.ERROR)
-//            if (taskName.contains("Test")) {
-//                disable("NullAway")
-//            }
         }
     }
 
