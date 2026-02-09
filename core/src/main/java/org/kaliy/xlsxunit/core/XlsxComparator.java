@@ -1,4 +1,4 @@
-package org.kaliy.xlsxunit;
+package org.kaliy.xlsxunit.core;
 
 import java.io.File;
 import java.util.Objects;

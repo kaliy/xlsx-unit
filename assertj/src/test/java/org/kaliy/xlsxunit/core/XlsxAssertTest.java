@@ -1,4 +1,4 @@
-package org.kaliy.xlsxunit;
+package org.kaliy.xlsxunit.core;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.kaliy.xlsxunit.assertj.XlsxAssertions;
 
 @NoArgsConstructor
 class XlsxAssertTest {

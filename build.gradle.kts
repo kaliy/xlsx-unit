@@ -1,5 +1,9 @@
+import net.ltgt.gradle.errorprone.CheckSeverity
+import net.ltgt.gradle.errorprone.errorprone
+
 plugins {
     id("base")
+    alias(libs.plugins.errorprone) apply false
     alias(libs.plugins.lombok) apply false
     alias(libs.plugins.spotbugs) apply false
 }
@@ -17,6 +21,7 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
+    apply(plugin = "net.ltgt.errorprone")
     apply(plugin = "io.freefair.lombok")
     apply(plugin = "com.github.spotbugs")
 
@@ -30,10 +35,23 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.release.set(rootProject.libs.versions.java.release.get().toInt())
+//        val taskName = name
+
+        options.errorprone {
+            errorproneArgs.add("-XepOpt:NullAway:OnlyNullMarked=true")
+            errorproneArgs.add("-XepOpt:NullAway:JSpecifyMode=true")
+            check("NullAway", CheckSeverity.ERROR)
+            check("RequireExplicitNullMarking", CheckSeverity.ERROR)
+//            if (taskName.contains("Test")) {
+//                disable("NullAway")
+//            }
+        }
     }
 
     dependencies {
         add("api", rootProject.libs.jspecify)
+        add("errorprone", rootProject.libs.errorprone.core)
+        add("errorprone", rootProject.libs.nullaway)
         add("testImplementation", rootProject.libs.assertj.core)
         add("testImplementation", rootProject.libs.junit.jupiter)
         add("testRuntimeOnly", rootProject.libs.junit.platform.launcher)

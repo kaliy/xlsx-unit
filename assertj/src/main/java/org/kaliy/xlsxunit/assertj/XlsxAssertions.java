@@ -1,4 +1,4 @@
-package org.kaliy.xlsxunit;
+package org.kaliy.xlsxunit.assertj;
 
 import java.io.File;
 import lombok.AccessLevel;

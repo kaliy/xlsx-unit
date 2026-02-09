@@ -1,4 +1,4 @@
-package org.kaliy.xlsxunit;
+package org.kaliy.xlsxunit.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

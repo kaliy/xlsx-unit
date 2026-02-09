@@ -1,7 +1,8 @@
-package org.kaliy.xlsxunit;
+package org.kaliy.xlsxunit.assertj;
 
 import java.io.File;
 import org.assertj.core.api.AbstractAssert;
+import org.kaliy.xlsxunit.core.XlsxComparator;
 
 /**
  * AssertJ assertion for XLSX files.
