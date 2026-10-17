@@ -12,11 +12,16 @@
         <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
 
+    <!-- AtLeastOneConstructor and the *CouldBeFinal rules only add ceremony; LongVariable fights descriptive names -->
     <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
         <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LongVariable"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="OnlyOneReturn"/>
         <exclude name="TooManyStaticImports"/>
         <exclude name="UseExplicitTypes"/>
-        <exclude name="OnlyOneReturn"/>
     </rule>
     <rule ref="category/java/codestyle.xml/MethodNamingConventions">
         <properties>
@@ -24,7 +29,9 @@
         </properties>
     </rule>
 
+    <!-- LawOfDemeter: navigating Apache POI's object graph is chained by design -->
     <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
         <exclude name="LoosePackageCoupling"/>
         <exclude name="TooManyFields"/>
     </rule>
@@ -34,14 +41,9 @@
         </properties>
     </rule>
 
-    <rule ref="category/java/documentation.xml"/>
-    <rule ref="category/java/documentation.xml/CommentRequired">
-        <properties>
-            <!-- The rule is great but tests have a lot of imports.
-            We will have it until this ticket is resolved https://github.com/pmd/pmd/issues/4036 -->
-            <property name="violationSuppressXPath"
-                      value="//ClassDeclaration[ends-with(@SimpleName, 'Test')]"/>
-        </properties>
+    <!-- Javadoc on public and protected API is enforced by Checkstyle (MissingJavadocType, MissingJavadocMethod) -->
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentRequired"/>
     </rule>
 
     <rule ref="category/java/errorprone.xml">

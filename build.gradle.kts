@@ -4,7 +4,6 @@ import net.ltgt.gradle.errorprone.errorprone
 plugins {
     id("base")
     alias(libs.plugins.errorprone) apply false
-    alias(libs.plugins.lombok) apply false
     alias(libs.plugins.spotbugs) apply false
 }
 
@@ -22,7 +21,6 @@ subprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "pmd")
     apply(plugin = "net.ltgt.errorprone")
-    apply(plugin = "io.freefair.lombok")
     apply(plugin = "com.github.spotbugs")
 
     extensions.configure<JavaPluginExtension> {

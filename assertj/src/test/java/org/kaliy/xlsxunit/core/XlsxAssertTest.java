@@ -7,18 +7,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.kaliy.xlsxunit.assertj.XlsxAssertions;
 
-@NoArgsConstructor
 class XlsxAssertTest {
 
     @Test
     void isEqualToPassesForSamePath() throws IOException {
-        final Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
-        final File expected = temp.toFile();
-        final File actual = new File(temp.toString());
+        Path temp = Files.createTempFile("xlsx-unit", ".xlsx");
+        File expected = temp.toFile();
+        File actual = new File(temp.toString());
 
         assertThatCode(() -> XlsxAssertions.assertThatXlsx(actual).isEqualTo(expected))
                 .doesNotThrowAnyException();
@@ -26,8 +24,8 @@ class XlsxAssertTest {
 
     @Test
     void isEqualToFailsForDifferentFiles() throws IOException {
-        final Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
-        final Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
+        Path left = Files.createTempFile("xlsx-unit-left", ".xlsx");
+        Path right = Files.createTempFile("xlsx-unit-right", ".xlsx");
 
         assertThatThrownBy(
                 () -> XlsxAssertions.assertThatXlsx(left.toFile()).isEqualTo(right.toFile())

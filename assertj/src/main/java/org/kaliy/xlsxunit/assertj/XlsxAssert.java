@@ -8,9 +8,7 @@ import org.kaliy.xlsxunit.core.XlsxComparator;
  * AssertJ assertion for XLSX files.
  */
 public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
-    /**
-     * Comparator used by this assertion.
-     */
+
     private final XlsxComparator comparator = new XlsxComparator();
 
     /**
@@ -18,7 +16,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      *
      * @param actual actual file reference
      */
-    public XlsxAssert(final File actual) {
+    public XlsxAssert(File actual) {
         super(actual, XlsxAssert.class);
     }
 
@@ -28,7 +26,7 @@ public final class XlsxAssert extends AbstractAssert<XlsxAssert, File> {
      * @param expected expected file reference
      * @return this assertion
      */
-    public XlsxAssert compare(final File expected) {
+    public XlsxAssert compare(File expected) {
         isNotNull();
 
         if (!comparator.areEqual(expected, actual)) {

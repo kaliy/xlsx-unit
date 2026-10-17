@@ -1,14 +1,13 @@
 package org.kaliy.xlsxunit.assertj;
 
 import java.io.File;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 /**
  * Entry point for XLSX assertions.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class XlsxAssertions {
+
+    private XlsxAssertions() {}
 
     /**
      * Creates an AssertJ-style assertion for XLSX files.
@@ -16,7 +15,7 @@ public final class XlsxAssertions {
      * @param actual actual file reference
      * @return assertion instance
      */
-    public static XlsxAssert assertThatXlsx(final File actual) {
+    public static XlsxAssert assertThatXlsx(File actual) {
         return new XlsxAssert(actual);
     }
 }
