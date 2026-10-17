@@ -6,48 +6,70 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   tests:
     name: Tests (Java ${{ matrix.java }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        java: ["17", "21", "25"]
+        java: [ "17", "21", "25" ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Set up Temurin ${{ matrix.java }}
-        uses: actions/setup-java@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Temurin ${{ matrix.java }} for tests and 25 for compilation
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
-          java-version: ${{ matrix.java }}
-          cache: gradle
-      - name: Run Gradle tests
-        run: ./gradlew test -PtoolchainVersion=${{ matrix.java }}
+          java-version: |
+            ${{ matrix.java }}
+            25
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      - name: Run tests on Java ${{ matrix.java }}
+        run: >-
+          ./gradlew test
+          -PtestJavaVersion=${{ matrix.java }}
+          -Porg.gradle.java.installations.fromEnv=JAVA_HOME_${{ matrix.java }}_${{ runner.arch }},JAVA_HOME_25_${{ runner.arch }}
+
   checkstyle:
     name: Checkstyle
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      checks: write
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Temurin 25
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: "25"
-          cache: gradle
-
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Run Checkstyle
         run: ./gradlew checkstyleMain checkstyleTest
-
-      - name: Setup reviewdog
-        if: always() && github.event_name == 'pull_request'
-        uses: reviewdog/action-setup@v1
+      - name: Set up reviewdog
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        uses: reviewdog/action-setup@d8a7baabd7f3e8544ee4dbde3ee41d0011c3a93f # v1.5.0
         with:
-          reviewdog_version: latest
-
-      - name: Report Checkstyle via reviewdog (GitHub Check)
-        if: always() && github.event_name == 'pull_request'
+          reviewdog_version: v0.21.2
+      - name: Report Checkstyle findings via reviewdog
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
@@ -56,48 +78,56 @@ jobs:
 
           mapfile -t reports < <(find . -path "*/build/reports/checkstyle/*.sarif" -type f | sort)
           if [ "${#reports[@]}" -eq 0 ]; then
-            echo "No checkstyle SARIF reports found."
+            echo "No Checkstyle SARIF reports found."
             exit 0
           fi
 
-          for r in "${reports[@]}"; do
-            # name can be anything; I include the module-ish prefix for clarity
-            name="checkstyle:$(echo "${r#./}" | sed 's#/build/reports/checkstyle/.*##; s#/#-#')"
-            cat "$r" | reviewdog \
+          for report in "${reports[@]}"; do
+            module="$(echo "${report#./}" | sed 's#/build/reports/checkstyle/.*##' | tr '/' '-')"
+            source_set="$(basename "$report" .sarif)"
+            reviewdog \
               -f=sarif \
-              -name="$name" \
+              -name="checkstyle:${module}:${source_set}" \
               -reporter=github-pr-check \
               -filter-mode=diff_context \
-              -level=error
+              -level=error \
+              < "$report"
           done
 
   pmd:
     name: PMD
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Set up Temurin 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: "25"
-          cache: gradle
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Run PMD
         run: ./gradlew pmdMain pmdTest
-        id: pmd
 
   spotbugs:
     name: SpotBugs
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Set up Temurin 25
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: "25"
-          cache: gradle
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Run SpotBugs
         run: ./gradlew spotbugsMain spotbugsTest
