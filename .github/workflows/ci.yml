@@ -27,20 +27,29 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Set up Temurin ${{ matrix.java }} for tests and 25 for compilation
+      - name: Set up Temurin ${{ matrix.java }} for tests
+        id: test-jdk
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
-          java-version: |
-            ${{ matrix.java }}
-            25
+          java-version: ${{ matrix.java }}
+      - name: Set up Temurin 25 for compilation
+        id: compile-jdk
+        uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
+        with:
+          distribution: temurin
+          java-version: "25"
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
       - name: Run tests on Java ${{ matrix.java }}
+        env:
+          TEST_JAVA_VERSION: ${{ matrix.java }}
+          TEST_JDK: ${{ steps.test-jdk.outputs.path }}
+          COMPILE_JDK: ${{ steps.compile-jdk.outputs.path }}
         run: >-
           ./gradlew test
-          -PtestJavaVersion=${{ matrix.java }}
-          -Porg.gradle.java.installations.fromEnv=JAVA_HOME_${{ matrix.java }}_${{ runner.arch }},JAVA_HOME_25_${{ runner.arch }}
+          -PtestJavaVersion="$TEST_JAVA_VERSION"
+          -Porg.gradle.java.installations.paths="$TEST_JDK,$COMPILE_JDK"
 
   checkstyle:
     name: Checkstyle
