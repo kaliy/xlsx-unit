@@ -12,12 +12,6 @@ plugins {
     alias(libs.plugins.version.catalog.update)
 }
 
-versionCatalogUpdate {
-    keep {
-        keepUnusedVersions = true
-    }
-}
-
 val compileJavaVersion = JavaLanguageVersion.of(libs.versions.java.toolchain.get())
 val javaRelease = libs.versions.java.release.get().toInt()
 val testJavaVersion = providers.gradleProperty("testJavaVersion").map { JavaLanguageVersion.of(it) }

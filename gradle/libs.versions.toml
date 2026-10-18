@@ -3,7 +3,9 @@ assertj = "3.27.7"
 checkstyle = "14.3.0"
 errorprone = "2.50.0"
 errorprone-plugin = "5.1.1"
+# @keep read by build.gradle.kts, not referenced by a library
 java-release = "17"
+# @keep read by build.gradle.kts, not referenced by a library
 java-toolchain = "25"
 jspecify = "1.0.1"
 junit = "6.1.3"
