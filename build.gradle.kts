@@ -12,8 +12,8 @@ plugins {
     alias(libs.plugins.version.catalog.update)
 }
 
-val compileJavaVersion = JavaLanguageVersion.of(libs.versions.java.toolchain.get())
-val javaRelease = libs.versions.java.release.get().toInt()
+val compileJavaVersion = JavaLanguageVersion.of(25)
+val javaRelease = 17
 val testJavaVersion = providers.gradleProperty("testJavaVersion").map { JavaLanguageVersion.of(it) }
 val checkstyleVersion = libs.versions.checkstyle.get()
 val pmdVersion = libs.versions.pmd.get()
