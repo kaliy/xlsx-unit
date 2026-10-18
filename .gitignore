@@ -13,6 +13,7 @@ Desktop.ini
 build/
 out/
 *.log
+gradle/libs.versions.updates.toml
 
 # IntelliJ IDEA
 .idea/
@@ -28,6 +29,9 @@ nbdist/
 # VS Code / Cursor
 .vscode/
 .cursor/
+
+# AI assistants
+.gemini/
 
 # Eclipse
 .project
