@@ -30,6 +30,9 @@ nbdist/
 .vscode/
 .cursor/
 
+# AI assistants
+.gemini/
+
 # Eclipse
 .project
 .classpath
