@@ -9,6 +9,13 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
     alias(libs.plugins.errorprone) apply false
     alias(libs.plugins.spotbugs) apply false
+    alias(libs.plugins.version.catalog.update)
+}
+
+versionCatalogUpdate {
+    keep {
+        keepUnusedVersions = true
+    }
 }
 
 val compileJavaVersion = JavaLanguageVersion.of(libs.versions.java.toolchain.get())
@@ -27,93 +34,103 @@ val junitJupiter = libs.junit.jupiter
 val junitPlatformLauncher = libs.junit.platform.launcher
 
 subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "checkstyle")
-    apply(plugin = "pmd")
-    apply(plugin = "net.ltgt.errorprone")
-    apply(plugin = "com.github.spotbugs")
+    pluginManager.withPlugin("java-library") {
+        configure<JavaPluginExtension> {
+            toolchain {
+                languageVersion = compileJavaVersion
+            }
+        }
 
-    configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion = compileJavaVersion
+        dependencies {
+            "api"(jspecify)
+            "testImplementation"(assertjCore)
+            "testImplementation"(junitJupiter)
+            "testRuntimeOnly"(junitPlatformLauncher)
+        }
+
+        tasks.withType<JavaCompile>().configureEach {
+            options.release = javaRelease
+        }
+
+        val javaToolchains = the<JavaToolchainService>()
+
+        tasks.withType<Test>().configureEach {
+            useJUnitPlatform()
+            javaLauncher = javaToolchains.launcherFor {
+                languageVersion = testJavaVersion.orElse(compileJavaVersion)
+            }
+            testLogging {
+                events("passed", "skipped", "failed")
+                exceptionFormat = TestExceptionFormat.FULL
+                showExceptions = true
+                showCauses = true
+                showStackTraces = true
+            }
         }
     }
 
-    dependencies {
-        "api"(jspecify)
-        "errorprone"(errorproneCore)
-        "errorprone"(nullaway)
-        "testImplementation"(assertjCore)
-        "testImplementation"(junitJupiter)
-        "testRuntimeOnly"(junitPlatformLauncher)
-    }
+    pluginManager.withPlugin("net.ltgt.errorprone") {
+        dependencies {
+            "errorprone"(errorproneCore)
+            "errorprone"(nullaway)
+        }
 
-    tasks.withType<JavaCompile>().configureEach {
-        options.release = javaRelease
-        options.errorprone {
-            check("NullAway", CheckSeverity.ERROR)
-            check("RequireExplicitNullMarking", CheckSeverity.ERROR)
-            option("NullAway:OnlyNullMarked", "true")
-            option("NullAway:JSpecifyMode", "true")
+        tasks.withType<JavaCompile>().configureEach {
+            options.errorprone {
+                check("NullAway", CheckSeverity.ERROR)
+                check("RequireExplicitNullMarking", CheckSeverity.ERROR)
+                option("NullAway:OnlyNullMarked", "true")
+                option("NullAway:JSpecifyMode", "true")
+            }
         }
     }
 
-    val javaToolchains = the<JavaToolchainService>()
-
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
-        javaLauncher = javaToolchains.launcherFor {
-            languageVersion = testJavaVersion.orElse(compileJavaVersion)
+    pluginManager.withPlugin("checkstyle") {
+        configure<CheckstyleExtension> {
+            toolVersion = checkstyleVersion
+            configFile = checkstyleConfig
+            maxWarnings = 0
+            maxErrors = 0
         }
-        testLogging {
-            events("passed", "skipped", "failed")
-            exceptionFormat = TestExceptionFormat.FULL
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-        }
-    }
 
-    configure<CheckstyleExtension> {
-        toolVersion = checkstyleVersion
-        configFile = checkstyleConfig
-        maxWarnings = 0
-        maxErrors = 0
-    }
-
-    tasks.withType<Checkstyle>().configureEach {
-        reports {
-            sarif.required = true
-            xml.required = true
-            html.required = true
+        tasks.withType<Checkstyle>().configureEach {
+            reports {
+                sarif.required = true
+                xml.required = true
+                html.required = true
+            }
         }
     }
 
-    configure<PmdExtension> {
-        toolVersion = pmdVersion
-        ruleSetFiles = files(pmdRuleSet)
-        isIgnoreFailures = false
-        isConsoleOutput = true
-    }
+    pluginManager.withPlugin("pmd") {
+        configure<PmdExtension> {
+            toolVersion = pmdVersion
+            ruleSetFiles = files(pmdRuleSet)
+            isIgnoreFailures = false
+            isConsoleOutput = true
+        }
 
-    tasks.withType<Pmd>().configureEach {
-        reports {
-            html.required = true
+        tasks.withType<Pmd>().configureEach {
+            reports {
+                html.required = true
+            }
         }
     }
 
-    configure<SpotBugsExtension> {
-        toolVersion = spotbugsVersion
-        effort = Effort.MAX
-        reportLevel = Confidence.LOW
-    }
-
-    tasks.withType<SpotBugsTask>().configureEach {
-        reports.create("html") {
-            required = true
+    pluginManager.withPlugin("com.github.spotbugs") {
+        configure<SpotBugsExtension> {
+            toolVersion = spotbugsVersion
+            effort = Effort.MAX
+            reportLevel = Confidence.LOW
         }
-        reports.create("xml") {
-            required = true
+
+        tasks.withType<SpotBugsTask>().configureEach {
+            reports.create("html") {
+                required = true
+            }
+            reports.create("xml") {
+                required = true
+            }
         }
     }
 }

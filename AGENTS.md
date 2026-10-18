@@ -6,9 +6,12 @@
   SpotBugs. Everything must pass. Never weaken a check to get a green build without asking.
 - `./gradlew test -PtestJavaVersion=17` runs the tests on another JVM. Compilation always uses JDK 25
   with `--release 17`.
-- All modules share the same build configuration, in the `subprojects {}` block of the root
-  `build.gradle.kts`; module build files only declare dependencies. Versions live in
-  `gradle/libs.versions.toml`.
+- Every module applies the same plugins in its own `plugins {}` block (`java-library`, `checkstyle`,
+  `pmd`, Error Prone, SpotBugs) and declares its dependencies. The root `build.gradle.kts` configures
+  those plugins for all modules through `pluginManager.withPlugin(...)` in `subprojects {}`.
+- Versions live in `gradle/libs.versions.toml`. To check for updates, run
+  `./gradlew versionCatalogUpdate --interactive`, review `gradle/libs.versions.updates.toml`, then
+  run `./gradlew versionCatalogApplyUpdates`.
 
 ## Code
 
