@@ -29,8 +29,8 @@ Sheet "Report":
 
 | Artifact | Purpose |
 |---|---|
-| `org.kaliy:xlsx-unit-core` | Comparison engine, independent of any assertion library |
-| `org.kaliy:xlsx-unit-assertj` | AssertJ entry point, `assertThatXlsx(...)` |
+| `org.kaliy.xlsxunit:xlsx-unit-core` | Comparison engine, independent of any assertion library |
+| `org.kaliy.xlsxunit:xlsx-unit-assertj` | AssertJ entry point, `assertThatXlsx(...)` |
 
 ## Requirements
 
