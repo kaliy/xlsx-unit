@@ -13,7 +13,6 @@ Desktop.ini
 build/
 out/
 *.log
-.kotlin/
 
 # IntelliJ IDEA
 .idea/

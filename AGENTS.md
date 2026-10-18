@@ -6,8 +6,9 @@
   SpotBugs. Everything must pass. Never weaken a check to get a green build without asking.
 - `./gradlew test -PtestJavaVersion=17` runs the tests on another JVM. Compilation always uses JDK 25
   with `--release 17`.
-- Shared build logic lives in `build-logic/src/main/kotlin/xlsxunit.java-library.gradle.kts`, and
-  module build files only declare dependencies. Versions live in `gradle/libs.versions.toml`.
+- All modules share the same build configuration, in the `subprojects {}` block of the root
+  `build.gradle.kts`; module build files only declare dependencies. Versions live in
+  `gradle/libs.versions.toml`.
 
 ## Code
 
